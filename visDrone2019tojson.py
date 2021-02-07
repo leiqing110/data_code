@@ -12,17 +12,20 @@ def convert_to_cocodetection(dir, output_dir):
     train_images = os.path.join(train_dir, "images")
     val_images = os.path.join(val_dir, "images")
     id_num = 0
- 
-    categories = [{"id": 0, "name": "pedestrian"},
-                  {"id": 1, "name": "people"},
-                  {"id": 2, "name": "bicycle"},
-                  {"id": 3, "name": "car"},
-                  {"id": 4, "name": "van"},
-                  {"id": 5, "name": "truck"},
-                  {"id": 6, "name": "tricycle"},
-                  {"id": 7, "name": "awning-tricycle"},
-                  {"id": 8, "name": "bus"},
-                  {"id": 9, "name": "motor"}
+#  ['ignored regions','pedestrian','people','bicycle','car','van','truck','tricycle','awning-tricycle','bus','motor','others']
+    categories = [
+                {"id": 0, "name": "ignored regions"},
+                {"id": 1, "name": "pedestrian"},
+                  {"id": 2, "name": "people"},
+                  {"id": 3, "name": "bicycle"},
+                  {"id": 4, "name": "car"},
+                  {"id": 5, "name": "van"},
+                  {"id": 6, "name": "truck"},
+                  {"id": 7, "name": "tricycle"},
+                  {"id": 8, "name": "awning-tricycle"},
+                  {"id": 9, "name": "bus"},
+                  {"id": 10, "name": "motor"},
+                  {"id": 11, "name": "others"},
                   ]
     for mode in ["train", "val"]:
         images = []
@@ -45,7 +48,7 @@ def convert_to_cocodetection(dir, output_dir):
             image["file_name"] = file_name
             image["height"] = height
             image["width"] = width
-            image["id"] = name
+            image["id"] = int(name)
             images.append(image)
             for line in f.readlines():
                 annotation = {}
@@ -54,7 +57,7 @@ def convert_to_cocodetection(dir, output_dir):
                     line = line.rstrip(",")
                 line_list = [int(i) for i in line.split(",")]
                 bbox_xywh = [line_list[0], line_list[1], line_list[2], line_list[3]]
-                annotation["image_id"] = name
+                annotation["image_id"] = int(name)
                 annotation["score"] = line_list[4]
                 annotation["bbox"] = bbox_xywh
                 annotation["category_id"] = int(line_list[5])
